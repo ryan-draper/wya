@@ -1,3 +1,4 @@
+from tkinter import W
 from google.cloud import vision
 import sys
 import cv2
@@ -9,7 +10,7 @@ from autocorrect import Speller
 
 def has_number(s):
     for l in s:
-        if s.isdigit():
+        if l.isdigit():
             return True
     return False
 
@@ -67,6 +68,12 @@ def find_issues(path):
     # Remove special characters in each text string (since they are probably misread)
     image_labels = [''.join(l for l in txt if l.isalnum() or l in [' ', '.', ',']) for txt in image_labels]
     image_labels = [spell(image_label) for image_label in image_labels]
+
+    # sort so labels are from shortest to longest
+    labels_texts = list(zip(image_labels, new_texts))
+    labels_texts.sort(key=lambda x : len(x[0].split()))
+    image_labels = [x[0] for x in labels_texts]
+    new_texts = [x[1] for x in labels_texts]
 
     text_msg = ''
     for label, text in zip(image_labels, new_texts):
