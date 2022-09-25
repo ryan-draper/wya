@@ -102,7 +102,11 @@ def main():
 
     if len(args) == 1:
         landmark_msg, text_msg = find_issues(args[0])
-        return (landmark_msg, text_msg)
+        if landmark_msg or text_msg:
+            return (True, landmark_msg, text_msg)
+        else:
+            return (False, landmark_msg, text_msg)
+
 
 if __name__ == "__main__":
     main()
