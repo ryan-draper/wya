@@ -7,6 +7,12 @@ import spacy
 from collections import Counter
 from autocorrect import Speller
 
+def has_number(s):
+    for l in s:
+        if s.isdigit():
+            return True
+    return False
+
 def find_issues(path):
     # Authentication
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./leafy-unity-253618-3af413006efe.json"
@@ -29,15 +35,19 @@ def find_issues(path):
 
     landmarks = set([landmark.description for landmark in landmark_response.landmark_annotations])
     if landmarks:
-        landmark_msg = f'Your image may identify the following landmarks: {", ".join(landmarks)}.'
+        landmark_msg = f'Your image may identify the following landmarks, boxed in green: {", ".join(landmarks)}.'
     else:
         landmark_msg =  ''
 
     # Add bounding box to landmark
+    boxed_landmarks = []
     for landmark_annotation in landmark_response.landmark_annotations:
+        # Don't box the same landmark more than once
+        if landmark_annotation.description in boxed_landmarks:
+            continue
         vertices = landmark_annotation.bounding_poly.vertices
-
         cv2.rectangle(cv_image, (vertices[0].x, vertices[0].y), (vertices[2].x, vertices[2].y), (0, 255, 0), 2)
+        boxed_landmarks.append(landmark_annotation.description)
 
     texts = text_response.text_annotations
     # Extract texts in image
@@ -73,15 +83,16 @@ def find_issues(path):
         # Check if a variety of obvious address indicators are in the string
         loc_ind_bool = False
         for loc_ind in ['street', 'st', 'dr', 'drive']:
-            if loc_ind in label.lower().split():
+            # Address has some identifier + a number
+            if loc_ind in label.lower().split() and has_number(label):
                 loc_ind_bool = True
 
         if loc_ind_bool or loc_ent_counts >= 2 or (loc_ent_counts == 1 and entity_hist.get('ORG', 0) >= 1):
             vertices = text.bounding_poly.vertices
 
-            cv2.rectangle(cv_image, (vertices[0].x, vertices[0].y), (vertices[2].x, vertices[2].y), (0, 255, 0), 2)
+            cv2.rectangle(cv_image, (vertices[0].x, vertices[0].y), (vertices[2].x, vertices[2].y), (0, 0, 255), 2)
         
-            text_msg = 'The boxed text may include location-sensitive info.'
+            text_msg = 'The text boxed in red may include location-sensitive info.'
             break
     cv2.imwrite("detected.png", cv_image)
     return (landmark_msg, text_msg)
@@ -91,6 +102,7 @@ def main():
 
     if len(args) == 1:
         landmark_msg, text_msg = find_issues(args[0])
+        print(landmark_msg, text_msg)
         return (landmark_msg, text_msg)
 
 if __name__ == "__main__":
