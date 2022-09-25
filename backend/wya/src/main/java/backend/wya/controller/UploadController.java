@@ -34,12 +34,12 @@ public class UploadController {
     }
 
     @PostMapping("upload")
-    public ResponseEntity<Result> uploadImage(@RequestBody MultipartFile file) throws Exception {
+    public ResponseEntity<String> uploadImage(@RequestBody MultipartFile file) throws Exception {
         StringBuilder fileNames = new StringBuilder();
         Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
         fileNames.append(file.getOriginalFilename());
         Files.write(fileNameAndPath, file.getBytes());
-        Result result = scriptService.runScript(fileNameAndPath.toString());
+        String result = scriptService.runScript(fileNameAndPath.toString());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

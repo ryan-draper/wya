@@ -13,7 +13,7 @@ public class ScriptService {
     public static String SCRIPT_DIRECTORY = System.getProperty("user.dir") + "/src/main/resources/script/";
     private final String programName = "detect.py";
 
-    public Result runScript(String path) throws Exception {
+    public String runScript(String path) throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder("python3", SCRIPT_DIRECTORY + programName, path);
         processBuilder.redirectErrorStream(true);
 
@@ -21,18 +21,24 @@ public class ScriptService {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         process.waitFor();
 
+//        String line;
+//        Result result = new Result();
+//        line = reader.readLine();
+////        if (line.equals("True")) {
+//            result.setFlagged(line);
+//            result.setLandMark(reader.readLine());
+//            result.setText(reader.readLine());
+////        } else {
+////            result.setFlagged(false);
+////        }
+//        reader.close();
+//        return result;
+
         String line;
-//        StringBuilder sb = new StringBuilder();
-        Result result = new Result();
-        line = reader.readLine();
-        if (line.equals("True")) {
-            result.setFlagged(true);
-            result.setLandMark(reader.readLine());
-            result.setText(reader.readLine());
-        } else {
-            result.setFlagged(false);
+        StringBuilder sb = new StringBuilder();
+        while((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
         }
-        reader.close();
-        return result;
+        return sb.toString();
     }
 }

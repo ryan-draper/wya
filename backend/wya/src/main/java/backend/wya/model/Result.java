@@ -2,12 +2,12 @@ package backend.wya.model;
 
 public class Result {
 
-    private Boolean isFlagged;
+    private String isFlagged;
     private String landMark;
     private String text;
     private String imagePath = "/Users/pasansirithanachai/repositories/hackrice12/wya/backend/wya/result";
 
-    public Result(Boolean isFlagged, String landMark, String text, String imagePath) {
+    public Result(String isFlagged, String landMark, String text, String imagePath) {
         this.isFlagged = isFlagged;
         this.landMark = landMark;
         this.text = text;
@@ -17,11 +17,11 @@ public class Result {
     public Result(){
     }
 
-    public Boolean getFlagged() {
+    public String getFlagged() {
         return isFlagged;
     }
 
-    public void setFlagged(Boolean flagged) {
+    public void setFlagged(String flagged) {
         isFlagged = flagged;
     }
 
