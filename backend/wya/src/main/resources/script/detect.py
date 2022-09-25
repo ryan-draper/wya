@@ -77,6 +77,10 @@ def find_issues(path):
 
     text_msg = ''
     for label, text in zip(image_labels, new_texts):
+        label_words = label.lower().split()
+        label_words = [''.join(l for l in txt if l.isalnum() or l == ' ') for txt in label_words]
+        print(label_words)
+
         if label.isnumeric() or len(label.split()) < 3:
             continue
         doc = nlp(label)
@@ -91,7 +95,7 @@ def find_issues(path):
         loc_ind_bool = False
         for loc_ind in ['street', 'st', 'dr', 'drive']:
             # Address has some identifier + a number
-            if loc_ind in label.lower().split() and has_number(label):
+            if loc_ind in label_words and has_number(label):
                 loc_ind_bool = True
 
         if loc_ind_bool or loc_ent_counts >= 2 or (loc_ent_counts == 1 and entity_hist.get('ORG', 0) >= 1):
