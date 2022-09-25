@@ -44,10 +44,13 @@ def find_issues(path):
         for _ in range(len(description_list)):
             new_texts.append(text)
 
+        if '\n' in description:
+            new_texts.append(text)
+            image_labels.append(description.replace('\n', ' '))
+
     # Remove special characters in each text string (since they are probably misread)
     image_labels = [''.join(l for l in txt if l.isalnum() or l in [' ', '.', ',']) for txt in image_labels]
     image_labels = [spell(image_label) for image_label in image_labels]
-    print(image_labels)
 
     text_msg = ''
     for label, text in zip(image_labels, new_texts):
@@ -55,14 +58,11 @@ def find_issues(path):
             continue
         doc = nlp(label)
 
-        print(label)
         entities = [ent.label_ for ent in doc.ents]
         entity_hist = Counter(entities)
         
         # Count number of "relevant" indicat
         loc_ent_counts = entity_hist.get('GPE', 0) + entity_hist.get('FAC', 0)
-        print(entity_hist)
-        print(loc_ent_counts)
 
         # Check if a variety of obvious address indicators are in the string
         loc_ind_bool = False
@@ -77,19 +77,16 @@ def find_issues(path):
             cv2.imwrite("detected.png", cv_image)
         
             text_msg = 'The boxed text may include location-sensitive info.'
-        break
+            break
 
-    return landmark_msg, text_msg
+    return (landmark_msg, text_msg)
 
 def main():
     args = sys.argv[1:]
 
     if len(args) == 1:
         landmark_msg, text_msg = find_issues(args[0])
-        if landmark_msg:
-            print(landmark_msg)
-        if text_msg:
-            print(text_msg)
+        return (landmark_msg, text_msg)
 
 if __name__ == "__main__":
     main()
