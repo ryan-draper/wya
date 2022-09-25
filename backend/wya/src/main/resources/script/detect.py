@@ -1,3 +1,4 @@
+from tkinter import W
 from google.cloud import vision
 import sys
 import cv2
@@ -6,6 +7,12 @@ import os
 import spacy
 from collections import Counter
 from autocorrect import Speller
+
+def has_number(s):
+    for l in s:
+        if l.isdigit():
+            return True
+    return False
 
 def find_issues(path):
     # Authentication
@@ -29,9 +36,19 @@ def find_issues(path):
 
     landmarks = set([landmark.description for landmark in landmark_response.landmark_annotations])
     if landmarks:
-        landmark_msg = f'Your image may identify the following landmarks: {", ".join(landmarks)}.'
+        landmark_msg = f'Your image may identify the following landmarks, boxed in green: {", ".join(landmarks)}.'
     else:
         landmark_msg =  ''
+
+    # Add bounding box to landmark
+    boxed_landmarks = []
+    for landmark_annotation in landmark_response.landmark_annotations:
+        # Don't box the same landmark more than once
+        if landmark_annotation.description in boxed_landmarks:
+            continue
+        vertices = landmark_annotation.bounding_poly.vertices
+        cv2.rectangle(cv_image, (vertices[0].x, vertices[0].y), (vertices[2].x, vertices[2].y), (0, 255, 0), 2)
+        boxed_landmarks.append(landmark_annotation.description)
 
     texts = text_response.text_annotations
     # Extract texts in image
@@ -44,10 +61,19 @@ def find_issues(path):
         for _ in range(len(description_list)):
             new_texts.append(text)
 
+        if '\n' in description:
+            new_texts.append(text)
+            image_labels.append(description.replace('\n', ' '))
+
     # Remove special characters in each text string (since they are probably misread)
     image_labels = [''.join(l for l in txt if l.isalnum() or l in [' ', '.', ',']) for txt in image_labels]
     image_labels = [spell(image_label) for image_label in image_labels]
-    print(image_labels)
+
+    # sort so labels are from shortest to longest
+    labels_texts = list(zip(image_labels, new_texts))
+    labels_texts.sort(key=lambda x : len(x[0].split()))
+    image_labels = [x[0] for x in labels_texts]
+    new_texts = [x[1] for x in labels_texts]
 
     text_msg = ''
     for label, text in zip(image_labels, new_texts):
@@ -55,41 +81,39 @@ def find_issues(path):
             continue
         doc = nlp(label)
 
-        print(label)
         entities = [ent.label_ for ent in doc.ents]
         entity_hist = Counter(entities)
         
         # Count number of "relevant" indicat
         loc_ent_counts = entity_hist.get('GPE', 0) + entity_hist.get('FAC', 0)
-        print(entity_hist)
-        print(loc_ent_counts)
 
         # Check if a variety of obvious address indicators are in the string
         loc_ind_bool = False
         for loc_ind in ['street', 'st', 'dr', 'drive']:
-            if loc_ind in label.lower().split():
+            # Address has some identifier + a number
+            if loc_ind in label.lower().split() and has_number(label):
                 loc_ind_bool = True
 
         if loc_ind_bool or loc_ent_counts >= 2 or (loc_ent_counts == 1 and entity_hist.get('ORG', 0) >= 1):
             vertices = text.bounding_poly.vertices
 
-            cv2.rectangle(cv_image, (vertices[0].x, vertices[0].y), (vertices[2].x, vertices[2].y), (0, 255, 0), 2)
-            cv2.imwrite("detected.png", cv_image)
+            cv2.rectangle(cv_image, (vertices[0].x, vertices[0].y), (vertices[2].x, vertices[2].y), (0, 0, 255), 2)
         
-            text_msg = 'The boxed text may include location-sensitive info.'
-        break
-
-    return landmark_msg, text_msg
+            text_msg = 'The text boxed in red may include location-sensitive info.'
+            break
+    cv2.imwrite("detected.png", cv_image)
+    return (landmark_msg, text_msg)
 
 def main():
     args = sys.argv[1:]
 
     if len(args) == 1:
         landmark_msg, text_msg = find_issues(args[0])
-        if landmark_msg:
-            print(landmark_msg)
-        if text_msg:
-            print(text_msg)
+        if landmark_msg or text_msg:
+            return (True, landmark_msg, text_msg)
+        else:
+            return (False, landmark_msg, text_msg)
+
 
 if __name__ == "__main__":
     main()
