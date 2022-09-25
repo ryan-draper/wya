@@ -1,4 +1,5 @@
 from google.cloud import vision
+import sys
 import cv2
 import io
 import os
@@ -61,5 +62,13 @@ def find_issues(path):
         break
 
     return landmark_msg, text_msg
-   
-print(find_issues("C:\\Users\\micha\\Documents\\RICE\\7 - F22\\wya\\popsmoke.png"))
+
+def main():
+    args = sys.argv[1:]
+
+    if args == 1:
+        find_issues(args[0])
+    
+
+if __name__ == "__main__":
+    main()
