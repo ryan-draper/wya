@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +20,9 @@ import java.nio.file.Paths;
 @Controller
 @RequestMapping("api/v1")
 public class UploadController {
+
+    @Autowired
+    private ScriptService scriptService;
 
     public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
 
@@ -29,12 +33,13 @@ public class UploadController {
     }
 
     @PostMapping("upload")
-    public String uploadImage(Model model, @RequestParam("image") MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) throws Exception {
         StringBuilder fileNames = new StringBuilder();
         Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
         fileNames.append(file.getOriginalFilename());
         Files.write(fileNameAndPath, file.getBytes());
-        model.addAttribute("msg", "Uploaded images: " + fileNames.toString());
-        return "index";
+        String result = scriptService.runScript(fileNameAndPath.toString());
+//        model.addAttribute("msg", "Uploaded images: " + fileNames.toString());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
