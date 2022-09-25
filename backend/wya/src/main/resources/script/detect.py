@@ -36,7 +36,7 @@ def find_issues(path):
 
     landmarks = set([landmark.description for landmark in landmark_response.landmark_annotations])
     if landmarks:
-        landmark_msg = f'Your image may identify the following landmarks, boxed in green: {", ".join(landmarks)}.'
+        landmark_msg = f'{", ".join(landmarks)}'
     else:
         landmark_msg =  ''
 
