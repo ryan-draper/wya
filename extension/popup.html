@@ -1,14 +1,40 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="button.css">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="popup.css"/>
   </head>
   <body>
-    <form>
-      <input id="myFile" type="file" name="fileupload"/>
-      <input id="myButton" type="button" value="Upload Image"/>
-      <script type="text/javascript" src="popup.js"></script>
-    </form>
+    <div class="container">
+      <p class="fs-1">wya</p>
+      <div id="content">
+        <form>
+          <label class="form-label" for="customFile">Upload a photo</label>
+          <input id="myFile" class="form-control" type="file" name="fileupload"/>
+          <p></p>
+          <input id="myButton" class="btn btn-primary" type="button" value="Upload image"/>
+          <p></p>
+          <script type="text/javascript" src="popup.js"></script>
+        </form>
+      </div>
+    </div>
 
+
+    <!-- <div class="container">
+      <p class="fs-1">wya</p>
+      <div id="content">
+          <script src="popup.js"></script>
+          <div id="upload">
+              <label class="form-label" for="customFile">Upload a photo</label>
+              <input type="file" class="form-control" id="customFile" />
+              <p></p>
+              <button type="submit" class="btn btn-primary">Upload image</button>
+          </div>
+      </div> -->
   </body>
 </html>
