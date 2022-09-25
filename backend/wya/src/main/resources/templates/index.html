@@ -11,7 +11,7 @@
                     <div class="col-md-8 mx-auto">
                         <h2>Upload Image Example</h2>
                         <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
-                        <form method="post" th:action="@{/api/v1/upload}" enctype="multipart/form-data">
+                        <form method="post" th:action="@{http://localhost:8080/api/v1/upload}" enctype="multipart/form-data">
                             <div class="form-group">
                                 <input type="file" name="image" accept="image/*" class="form-control-file">
                             </div>
