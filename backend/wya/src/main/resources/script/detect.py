@@ -33,6 +33,12 @@ def find_issues(path):
     else:
         landmark_msg =  ''
 
+    # Add bounding box to landmark
+    for landmark_annotation in landmark_response.landmark_annotations:
+        vertices = landmark_annotation.bounding_poly.vertices
+
+        cv2.rectangle(cv_image, (vertices[0].x, vertices[0].y), (vertices[2].x, vertices[2].y), (0, 255, 0), 2)
+
     texts = text_response.text_annotations
     # Extract texts in image
     image_labels = []
@@ -74,11 +80,10 @@ def find_issues(path):
             vertices = text.bounding_poly.vertices
 
             cv2.rectangle(cv_image, (vertices[0].x, vertices[0].y), (vertices[2].x, vertices[2].y), (0, 255, 0), 2)
-            cv2.imwrite("detected.png", cv_image)
         
             text_msg = 'The boxed text may include location-sensitive info.'
             break
-
+    cv2.imwrite("detected.png", cv_image)
     return (landmark_msg, text_msg)
 
 def main():
