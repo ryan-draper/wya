@@ -79,7 +79,6 @@ def find_issues(path):
     for label, text in zip(image_labels, new_texts):
         label_words = label.lower().split()
         label_words = [''.join(l for l in txt if l.isalnum() or l == ' ') for txt in label_words]
-        print(label_words)
 
         if label.isnumeric() or len(label.split()) < 3:
             continue

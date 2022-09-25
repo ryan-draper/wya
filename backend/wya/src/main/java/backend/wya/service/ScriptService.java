@@ -23,14 +23,19 @@ public class ScriptService {
 
         String line;
         Result result = new Result();
+        StringBuilder sb = new StringBuilder();
         line = reader.readLine();
+        sb.append(line);
         if (line.equals("True")) {
             result.setFlagged(true);
-            result.setLandMark(reader.readLine());
+            line = reader.readLine();
+            sb.append(line);
+            result.setLandMark(line);
         } else {
             result.setFlagged(false);
         }
         reader.close();
+        System.out.println(sb.toString());
         return result;
     }
 }
