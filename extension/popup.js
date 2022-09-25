@@ -24,6 +24,7 @@
 //     console.log()
 //     httpGetAsync("http://localhost:8080/api/v1", callback);
 // });
+document.getElementById("myButton").addEventListener("click", submitImage);
 
 function submitImage() {
     const url = "http://localhost:8080/api/v1/upload";
