@@ -105,7 +105,7 @@ def find_issues(path):
         
             text_msg = 'The text boxed in red may include location-sensitive info.'
             break
-    cv2.imwrite("detected.png", cv_image)
+    cv2.imwrite("/Users/pasansirithanachai/repositories/hackrice12/wya/backend/wya/result/detected.png", cv_image)
     return (landmark_msg, text_msg)
 
 def main():

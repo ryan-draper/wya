@@ -39,8 +39,7 @@ public class UploadController {
         Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
         fileNames.append(file.getOriginalFilename());
         Files.write(fileNameAndPath, file.getBytes());
-//        Result result = scriptService.runScript(fileNameAndPath.toString());
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-        return new ResponseEntity<>(new Result("test", "test", "test"), HttpStatus.OK);
+        Result result = scriptService.runScript(fileNameAndPath.toString());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
