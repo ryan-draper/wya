@@ -10,9 +10,10 @@ import java.util.List;
 public class ScriptService {
 
     public static String SCRIPT_DIRECTORY = System.getProperty("user.dir") + "/src/main/resources/script/";
+    private final String programName = "hello.py";
 
-    public String runScript() throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder("python3", SCRIPT_DIRECTORY + "hello.py");
+    public String runScript(String path) throws Exception {
+        ProcessBuilder processBuilder = new ProcessBuilder("python3", SCRIPT_DIRECTORY + programName, path);
         processBuilder.redirectErrorStream(true);
 
         Process process = processBuilder.start();
