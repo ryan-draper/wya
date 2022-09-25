@@ -16,7 +16,7 @@ def has_number(s):
 
 def find_issues(path):
     # Authentication
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./leafy-unity-253618-3af413006efe.json"
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/Users/pasansirithanachai/repositories/hackrice12/wya/backend/wya/src/main/resources/script/leafy-unity-253618-3af413006efe.json"
 
     client = vision.ImageAnnotatorClient()
     spell = Speller(lang='en')

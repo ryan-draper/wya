@@ -1,15 +1,15 @@
-function httpGet(theUrl) {
-    // var xmlHttp = new XMLHttpRequest();
-    // xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-    // xmlHttp.send( null );
-    // document.getElementById("upload").innerHTML = xmlHttp.responseText;
-    // document.write(xmlHttp.responseText);
-}
+// function httpGet(theUrl) {
+//     // var xmlHttp = new XMLHttpRequest();
+//     // xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+//     // xmlHttp.send( null );
+//     // document.getElementById("upload").innerHTML = xmlHttp.responseText;
+//     // document.write(xmlHttp.responseText);
+// }
 
-window.onload = function() {
-    // httpGet('http://localhost:8080/api/v1/uploadimage');
-    //console.log('1');
-};
+// window.onload = function() {
+//     // httpGet('http://localhost:8080/api/v1/uploadimage');
+//     //console.log('1');
+// };
 
 
 // function doFetch(url) {
@@ -24,3 +24,25 @@ window.onload = function() {
 //     console.log()
 //     httpGetAsync("http://localhost:8080/api/v1", callback);
 // });
+
+function submitImage() {
+    const url = "http://localhost:8080/api/v1/upload";
+    const fileInput = document.getElementById("myFile");
+    if (fileInput.files.length != 0) {
+        var formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+        (async() => {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const json = await response.json();
+                console.log(json)
+            } catch (e) {
+                console.error(e);
+                alert('error lol');
+            }
+        })();
+    }
+}
