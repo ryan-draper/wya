@@ -1,5 +1,6 @@
 package backend.wya.controller;
 
+import backend.wya.model.Result;
 import backend.wya.service.ScriptService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,13 @@ public class UploadController {
     }
 
     @PostMapping("upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) throws Exception {
+    public ResponseEntity<Result> uploadImage(@RequestBody MultipartFile file) throws Exception {
         StringBuilder fileNames = new StringBuilder();
         Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
         fileNames.append(file.getOriginalFilename());
         Files.write(fileNameAndPath, file.getBytes());
-        String result = scriptService.runScript(fileNameAndPath.toString());
-//        model.addAttribute("msg", "Uploaded images: " + fileNames.toString());
-        return new ResponseEntity<>(result, HttpStatus.OK);
+//        Result result = scriptService.runScript(fileNameAndPath.toString());
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(new Result("test", "test", "test"), HttpStatus.OK);
     }
 }

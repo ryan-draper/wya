@@ -2,15 +2,13 @@
 <html>
   <head>
     <link rel="stylesheet" href="button.css">
+    <script type="text/javascript" src="popup.js"></script>
   </head>
   <body>
-    <p>Hello</p>
-    <script src="popup.js"></script>
-    <div id="upload">
-        <form action="/action_page.php">
-            <input type="file" id="myFile" name="filename">
-            <input type="submit">
-          </form>
-    </div>
+    <form>
+      <input type="file" id="myFile" name="fileupload"/>
+      <input type="button" onclick="submitImage()" value="Upload Image"/>
+    </form>
+
   </body>
 </html>
